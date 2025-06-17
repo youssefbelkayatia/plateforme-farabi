@@ -1,0 +1,876 @@
+<div class="min-h-screen bg-secondary">
+  <!-- Header -->
+  <header class="bg-primary py-6 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-playfair text-white">Espace Administrateur</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Alert Messages - Only show when modals are closed -->
+    <div *ngIf="errorMessage && !isAdding && !isEditing && !isAddingInstrumental && !isEditingInstrumental" class="mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded relative" role="alert">
+      <span class="block sm:inline">{{ errorMessage }}</span>
+      <button (click)="clearMessages()" class="absolute top-0 right-0 px-4 py-3">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div *ngIf="successMessage && !isAdding && !isEditing && !isAddingInstrumental && !isEditingInstrumental" class="mb-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded relative" role="alert">
+      <span class="block sm:inline">{{ successMessage }}</span>
+      <button (click)="clearMessages()" class="absolute top-0 right-0 px-4 py-3">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoading" class="flex justify-center my-8">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-tertiary"></div>
+    </div>
+
+    <!-- Modal Background Overlay -->
+    <div *ngIf="isAddingInstrumental" 
+         class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center overflow-y-auto modal-backdrop"
+         (click)="closeModalOnBackdropClick($event)">
+      <!-- Modal Content -->
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 sm:mx-auto z-50 relative animate-fadeIn max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="bg-primary text-white px-4 sm:px-6 py-3 sm:py-4 rounded-t-lg flex justify-between items-center sticky top-0 z-10">
+          <h2 class="text-xl sm:text-2xl font-playfair">
+            {{ isEditingInstrumental ? 'Modifier l\'instrumental' : 'Ajouter un nouvel instrumental' }}
+          </h2>
+          <button 
+            (click)="cancelEdit()" 
+            class="text-white hover:text-gray-200 focus:outline-none"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="p-4 sm:p-6">
+          <!-- Success Message in Modal -->
+          <div *ngIf="showModalSuccess" class="mb-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded relative animate-pulse" role="alert">
+            <span class="block sm:inline">{{ modalSuccessMessage }}</span>
+          </div>
+          
+          <!-- Error Message in Modal -->
+          <div *ngIf="showModalError" class="mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded relative" role="alert">
+            <span class="block sm:inline">{{ modalErrorMessage }}</span>
+            <button (click)="showModalError = false" class="absolute top-0 right-0 px-4 py-3">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <form [formGroup]="instrumentalForm" (ngSubmit)="saveInstrumental()" class="space-y-4 sm:space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <!-- Titre -->
+              <div>
+                <label for="titre-instrumental" class="block text-sm font-medium text-gray-700 mb-1">Titre*</label>
+                <input 
+                  type="text" 
+                  id="titre-instrumental" 
+                  formControlName="titre" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                  [ngClass]="{'border-red-500': instrumentalForm.get('titre')?.invalid && instrumentalForm.get('titre')?.touched}"
+                >
+                <div *ngIf="instrumentalForm.get('titre')?.invalid && instrumentalForm.get('titre')?.touched" class="text-red-500 text-sm mt-1">
+                  Le titre est obligatoire
+                </div>
+              </div>
+
+              <!-- Compositeur -->
+              <div>
+                <label for="compositeur-instrumental" class="block text-sm font-medium text-gray-700 mb-1">Compositeur</label>
+                <input 
+                  type="text" 
+                  id="compositeur-instrumental" 
+                  formControlName="compositeur" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+              </div>
+
+              <!-- Année -->
+              <div>
+                <label for="annee-instrumental" class="block text-sm font-medium text-gray-700 mb-1">Année</label>
+                <input 
+                  type="number" 
+                  id="annee-instrumental" 
+                  formControlName="annee" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+              </div>
+
+              <!-- Rythme -->
+              <div>
+                <label for="rythme-instrumental" class="block text-sm font-medium text-gray-700 mb-1">Rythme</label>
+                <input 
+                  type="text" 
+                  id="rythme-instrumental" 
+                  formControlName="rythme" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+              </div>
+
+              <!-- Makam -->
+              <div>
+                <label for="makam-instrumental" class="block text-sm font-medium text-gray-700 mb-1">Makam</label>
+                <select 
+                  id="makam-instrumental" 
+                  formControlName="makam" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+                  <option value="">Sélectionner un makam</option>
+                  <option *ngFor="let makam of makamTypes" [value]="makam">{{ makam }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- File Inputs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
+              <!-- Partition File -->
+              <div>
+                <label for="partition-instrumental" class="block text-sm font-medium text-gray-700 mb-1">
+                  Partition {{ isEditingInstrumental ? '(optionnel pour la modification)' : '*' }}
+                </label>
+                
+                <!-- Partition Format Selection -->
+                <div class="mb-3">
+                  <p class="text-sm text-gray-600 mb-1">Format de partition :</p>
+                  <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                      <input 
+                        type="radio" 
+                        id="partitionSingleFileInstrumental" 
+                        name="partitionFormatInstrumental" 
+                        [value]="false" 
+                        [(ngModel)]="isMultiplePartitionImages" 
+                        [ngModelOptions]="{standalone: true}"
+                        class="mr-2"
+                      >
+                      <label for="partitionSingleFileInstrumental" class="text-sm text-gray-600">Fichier unique</label>
+                    </div>
+                    <div class="flex items-center">
+                      <input 
+                        type="radio" 
+                        id="partitionMultipleImagesInstrumental" 
+                        name="partitionFormatInstrumental" 
+                        [value]="true" 
+                        [(ngModel)]="isMultiplePartitionImages" 
+                        [ngModelOptions]="{standalone: true}"
+                        class="mr-2"
+                      >
+                      <label for="partitionMultipleImagesInstrumental" class="text-sm text-gray-600">Images multiples</label>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Single File Input (shown when isMultiplePartitionImages is false) -->
+                <input 
+                  *ngIf="!isMultiplePartitionImages"
+                  type="file" 
+                  id="partition-instrumental" 
+                  (change)="onPartitionFileChange($event)" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary text-sm"
+                  accept="application/pdf,image/*"
+                >
+                
+                <!-- Multiple Images Input (shown when isMultiplePartitionImages is true) -->
+                <div *ngIf="isMultiplePartitionImages" class="space-y-3">
+                  <input 
+                    type="file" 
+                    id="partitionImagesInstrumental" 
+                    (change)="onPartitionImagesChange($event)" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                    accept="image/*"
+                    multiple
+                  >
+                  
+                  <!-- Title for PDF -->
+                  <div>
+                    <label for="partitionTitleInstrumental" class="block text-xs text-gray-600 mb-1">Titre du PDF (optionnel)</label>
+                    <input 
+                      type="text" 
+                      id="partitionTitleInstrumental" 
+                      [(ngModel)]="partitionPdfTitle" 
+                      [ngModelOptions]="{standalone: true}"
+                      placeholder="Titre de la partition" 
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary text-sm"
+                    >
+                  </div>
+                  
+                  <!-- Preview of selected images -->
+                  <div *ngIf="partitionImages.length > 0" class="mt-2">
+                    <p class="text-xs font-medium text-gray-700 mb-1">
+                      {{ partitionImages.length }} image(s) sélectionnée(s)
+                    </p>
+                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      <div *ngFor="let img of partitionImagesPreview; let i = index" class="relative group">
+                        <img [src]="img" class="h-20 w-full object-cover border border-gray-300 rounded" alt="Aperçu">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <button 
+                            type="button" 
+                            (click)="removePartitionImage(i)" 
+                            class="bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                        <span class="absolute bottom-0 left-0 bg-black bg-opacity-60 text-white text-xs px-1 rounded-tr rounded-bl">{{ i + 1 }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <p class="text-xs text-gray-500 mt-1">
+                  {{ isMultiplePartitionImages ? 'Sélectionnez plusieurs images qui seront combinées en PDF' : 'Format PDF ou image' }}
+                </p>
+              </div>
+
+              <!-- Audio File -->
+              <div>
+                <label for="audio-instrumental" class="block text-sm font-medium text-gray-700 mb-1">
+                  Audio (optionnel)
+                </label>
+                <input 
+                  type="file" 
+                  id="audio-instrumental" 
+                  (change)="onAudioFileChange($event)" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary text-sm"
+                  accept="audio/*"
+                >
+                <p class="text-xs text-gray-500 mt-1">Format audio (MP3, WAV)</p>
+              </div>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4">
+              <button 
+                type="button" 
+                (click)="cancelEdit()" 
+                class="w-full sm:w-auto px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+              >
+                Annuler
+              </button>
+              <button 
+                type="submit" 
+                [disabled]="isLoading" 
+                class="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors flex items-center justify-center"
+              >
+                <svg *ngIf="isLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {{ isEditingInstrumental ? 'Modifier' : 'Ajouter' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Background Overlay for Chanson -->
+    <div *ngIf="isAdding || isEditing" 
+         class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center overflow-y-auto modal-backdrop"
+         (click)="closeModalOnBackdropClick($event)">
+      <!-- Modal Content -->
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 sm:mx-auto z-50 relative animate-fadeIn max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="bg-primary text-white px-4 sm:px-6 py-3 sm:py-4 rounded-t-lg flex justify-between items-center sticky top-0 z-10">
+          <h2 class="text-xl sm:text-2xl font-playfair">
+            {{ isAdding ? 'Ajouter une nouvelle chanson' : 'Modifier la chanson' }}
+          </h2>
+          <button 
+            (click)="cancelEdit()" 
+            class="text-white hover:text-gray-200 focus:outline-none"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="p-4 sm:p-6">
+          <!-- Success Message in Modal -->
+          <div *ngIf="showModalSuccess" class="mb-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded relative animate-pulse" role="alert">
+            <span class="block sm:inline">{{ modalSuccessMessage }}</span>
+          </div>
+
+          <!-- Error Message in Modal -->
+          <div *ngIf="showModalError" class="mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded relative" role="alert">
+            <span class="block sm:inline">{{ modalErrorMessage }}</span>
+            <button (click)="showModalError = false" class="absolute top-0 right-0 px-4 py-3">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form [formGroup]="chansonForm" (ngSubmit)="saveChanson()" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Titre -->
+              <div>
+                <label for="titre" class="block text-sm font-medium text-gray-700 mb-1">Titre*</label>
+                <input 
+                  type="text" 
+                  id="titre" 
+                  formControlName="titre" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                  [ngClass]="{'border-red-500': chansonForm.get('titre')?.invalid && chansonForm.get('titre')?.touched}"
+                >
+                <div *ngIf="chansonForm.get('titre')?.invalid && chansonForm.get('titre')?.touched" class="text-red-500 text-sm mt-1">
+                  Le titre est obligatoire
+                </div>
+              </div>
+
+              <!-- Chanteur -->
+              <div>
+                <label for="chanteur" class="block text-sm font-medium text-gray-700 mb-1">Chanteur*</label>
+                <input 
+                  type="text" 
+                  id="chanteur" 
+                  formControlName="chanteur" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                  [ngClass]="{'border-red-500': chansonForm.get('chanteur')?.invalid && chansonForm.get('chanteur')?.touched}"
+                >
+                <div *ngIf="chansonForm.get('chanteur')?.invalid && chansonForm.get('chanteur')?.touched" class="text-red-500 text-sm mt-1">
+                  Le chanteur est obligatoire
+                </div>
+              </div>
+
+              <!-- Compositeur -->
+              <div>
+                <label for="compositeur" class="block text-sm font-medium text-gray-700 mb-1">Compositeur</label>
+                <input 
+                  type="text" 
+                  id="compositeur" 
+                  formControlName="compositeur" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+              </div>
+
+              <!-- Parolier -->
+              <div>
+                <label for="parolier" class="block text-sm font-medium text-gray-700 mb-1">Parolier</label>
+                <input 
+                  type="text" 
+                  id="parolier" 
+                  formControlName="parolier" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+              </div>
+
+              <!-- Type -->
+              <div>
+                <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <select 
+                  id="type" 
+                  formControlName="type" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+                  <option value="">Sélectionner un type</option>
+                  <option *ngFor="let type of chansonTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+
+              <!-- Année -->
+              <div>
+                <label for="annee" class="block text-sm font-medium text-gray-700 mb-1">Année</label>
+                <input 
+                  type="number" 
+                  id="annee" 
+                  formControlName="annee" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+              </div>
+
+              <!-- Rythme -->
+              <div>
+                <label for="rythme" class="block text-sm font-medium text-gray-700 mb-1">Rythme</label>
+                <input 
+                  type="text" 
+                  id="rythme" 
+                  formControlName="rythme" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+              </div>
+
+              <!-- Makam -->
+              <div>
+                <label for="makam" class="block text-sm font-medium text-gray-700 mb-1">Makam</label>
+                <select 
+                  id="makam" 
+                  formControlName="makam" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                >
+                  <option value="">Sélectionner un makam</option>
+                  <option *ngFor="let makam of makamTypes" [value]="makam">{{ makam }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- File Inputs -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+              <!-- Paroles File -->
+              <div>
+                <label for="paroles" class="block text-sm font-medium text-gray-700 mb-1">
+                  Paroles {{ isAdding ? '*' : '(optionnel pour la modification)' }}
+                </label>
+                <input 
+                  type="file" 
+                  id="paroles" 
+                  (change)="onParolesFileChange($event)" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                  accept="image/*"
+                >
+                <p class="text-xs text-gray-500 mt-1">Format image recommandé (JPG, PNG)</p>
+              </div>
+
+              <!-- Partition File -->
+              <div>
+                <label for="partition" class="block text-sm font-medium text-gray-700 mb-1">
+                  Partition {{ isAdding ? '*' : '(optionnel pour la modification)' }}
+                </label>
+                
+                <!-- Partition Format Selection -->
+                <div class="mb-3">
+                  <p class="text-sm text-gray-600 mb-1">Format de partition :</p>
+                  <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                      <input 
+                        type="radio" 
+                        id="partitionSingleFile" 
+                        name="partitionFormat" 
+                        [value]="false" 
+                        [(ngModel)]="isMultiplePartitionImages" 
+                        [ngModelOptions]="{standalone: true}"
+                        class="mr-2"
+                      >
+                      <label for="partitionSingleFile" class="text-sm text-gray-600">Fichier unique</label>
+                    </div>
+                    <div class="flex items-center">
+                      <input 
+                        type="radio" 
+                        id="partitionMultipleImages" 
+                        name="partitionFormat" 
+                        [value]="true" 
+                        [(ngModel)]="isMultiplePartitionImages" 
+                        [ngModelOptions]="{standalone: true}"
+                        class="mr-2"
+                      >
+                      <label for="partitionMultipleImages" class="text-sm text-gray-600">Images multiples</label>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Single File Input (shown when isMultiplePartitionImages is false) -->
+                <input 
+                  *ngIf="!isMultiplePartitionImages"
+                  type="file" 
+                  id="partition" 
+                  (change)="onPartitionFileChange($event)" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                  accept="application/pdf,image/*"
+                >
+                
+                <!-- Multiple Images Input (shown when isMultiplePartitionImages is true) -->
+                <div *ngIf="isMultiplePartitionImages" class="space-y-3">
+                  <input 
+                    type="file" 
+                    id="partitionImages" 
+                    (change)="onPartitionImagesChange($event)" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                    accept="image/*"
+                    multiple
+                  >
+                  
+                  <!-- Title for PDF -->
+                  <div>
+                    <label for="partitionTitle" class="block text-xs text-gray-600 mb-1">Titre du PDF (optionnel)</label>
+                    <input 
+                      type="text" 
+                      id="partitionTitle" 
+                      [(ngModel)]="partitionPdfTitle" 
+                      [ngModelOptions]="{standalone: true}"
+                      placeholder="Titre de la partition" 
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary text-sm"
+                    >
+                  </div>
+                  
+                  <!-- Preview of selected images -->
+                  <div *ngIf="partitionImages.length > 0" class="mt-2">
+                    <p class="text-xs font-medium text-gray-700 mb-1">
+                      {{ partitionImages.length }} image(s) sélectionnée(s)
+                    </p>
+                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      <div *ngFor="let img of partitionImagesPreview; let i = index" class="relative group">
+                        <img [src]="img" class="h-20 w-full object-cover border border-gray-300 rounded" alt="Aperçu">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <button 
+                            type="button" 
+                            (click)="removePartitionImage(i)" 
+                            class="bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                        <span class="absolute bottom-0 left-0 bg-black bg-opacity-60 text-white text-xs px-1 rounded-tr rounded-bl">{{ i + 1 }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <p class="text-xs text-gray-500 mt-1">
+                  {{ isMultiplePartitionImages ? 'Sélectionnez plusieurs images qui seront combinées en PDF' : 'Format PDF ou image' }}
+                </p>
+              </div>
+
+              <!-- Audio File -->
+              <div>
+                <label for="audio" class="block text-sm font-medium text-gray-700 mb-1">
+                  Audio {{ isAdding ? '*' : '(optionnel pour la modification)' }}
+                </label>
+                <input 
+                  type="file" 
+                  id="audio" 
+                  (change)="onAudioFileChange($event)" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                  accept="audio/*"
+                >
+                <p class="text-xs text-gray-500 mt-1">Format audio (MP3, WAV)</p>
+              </div>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="flex justify-end space-x-4 pt-4">
+              <button 
+                type="button" 
+                (click)="cancelEdit()" 
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+              >
+                Annuler
+              </button>
+              <button 
+                type="submit" 
+                [disabled]="isLoading" 
+                class="px-4 py-2 bg-tertiary text-white rounded hover:bg-quaternary transition-colors flex items-center"
+              >
+                <svg *ngIf="isLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {{ isAdding ? 'Ajouter' : 'Mettre à jour' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- List Section -->
+    <div *ngIf="!isAdding && !isEditing && !isAddingInstrumental && !isEditingInstrumental" class="space-y-6">
+      <!-- Filters -->
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <!-- Search Input -->
+          <div class="flex-grow">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input 
+                type="text" 
+                [(ngModel)]="searchTerm" 
+                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+                placeholder="Rechercher par titre, chanteur, compositeur..."
+              >
+            </div>
+          </div>
+
+          <!-- Type Filter (Only show for Chansons tab) -->
+          <div *ngIf="activeTab === 'chansons'" class="w-full md:w-64">
+            <select 
+              [(ngModel)]="selectedType" 
+              class="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-tertiary focus:border-tertiary"
+            >
+              <option value="">Tous les types</option>
+              <option *ngFor="let type of chansonTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+
+          <!-- Reset Filters Button -->
+          <div class="flex-shrink-0">
+            <button 
+              (click)="resetFilters()" 
+              class="w-full md:w-auto px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors flex items-center justify-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Réinitialiser
+            </button>
+          </div>
+        </div>
+        
+        <!-- Add Buttons -->
+        <div class="mt-6 flex justify-end space-x-4">
+          <button 
+            (click)="startAddInstrumental()" 
+            class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors flex items-center"
+            [ngClass]="{'opacity-75': activeTab !== 'instrumentals'}"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+            </svg>
+            Ajouter un instrumental
+          </button>
+          
+          <button 
+            (click)="startAddChanson()" 
+            class="px-4 py-2 bg-tertiary text-white rounded hover:bg-quaternary transition-colors flex items-center"
+            [ngClass]="{'opacity-75': activeTab !== 'chansons'}"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Ajouter une chanson
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex justify-center mb-6">
+        <div class="inline-flex bg-gray-100 rounded-lg p-1">
+          <button 
+            (click)="setActiveTab('chansons')" 
+            class="py-2 px-6 rounded-md font-medium text-sm focus:outline-none transition-colors"
+            [ngClass]="activeTab === 'chansons' ? 'bg-white text-tertiary shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+          >
+            Chansons
+          </button>
+          <button 
+            (click)="setActiveTab('instrumentals')" 
+            class="py-2 px-6 rounded-md font-medium text-sm focus:outline-none transition-colors"
+            [ngClass]="activeTab === 'instrumentals' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+          >
+            Instrumentals
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Summary -->
+      <div class="flex justify-between items-center">
+        <p class="text-white">
+          <span class="font-medium">{{ filteredItems.length }}</span> 
+          {{ activeTab === 'chansons' ? 'chanson(s)' : 'instrumental(s)' }} trouvé(s)
+        </p>
+        <p class="text-white" *ngIf="totalPages > 1">
+          Page <span class="font-medium">{{ currentPage }}</span> sur <span class="font-medium">{{ totalPages }}</span>
+        </p>
+      </div>
+
+      <!-- Songs Cards -->
+      <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Individual Song Card -->
+        <div *ngFor="let item of paginatedItems" class="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+          <div class="p-6">
+            <!-- Song Header -->
+            <div class="flex justify-between items-start">
+              <h3 class="text-xl font-bold text-primary font-playfair">{{ item.titre }}</h3>
+              <span 
+                *ngIf="item.type"
+                class="px-3 py-1 text-xs font-semibold rounded-full"
+                [ngClass]="item.type === 'Instrumental' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'">
+                {{ item.type }}
+              </span>
+            </div>
+            
+            <!-- Song Details -->
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Left Column -->
+              <div>
+                <!-- Chanteur (only show for songs) -->
+                <div *ngIf="activeTab === 'chansons'" class="flex items-center text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                  <span class="font-medium">Chanteur:</span>
+                  <span class="ml-2">{{ item.chanteur }}</span>
+                </div>
+                
+                <!-- Compositeur -->
+                <div class="flex items-center text-gray-600" [ngClass]="{'mt-2': activeTab === 'chansons'}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                  <span class="font-medium">Compositeur:</span>
+                  <span class="ml-2">{{ item.compositeur || '-' }}</span>
+                </div>
+                
+                <!-- Parolier (only show for songs) -->
+                <div *ngIf="activeTab === 'chansons'" class="flex items-center text-gray-600 mt-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span class="font-medium">Parolier:</span>
+                  <span class="ml-2">{{ item.parolier || '-' }}</span>
+                </div>
+              </div>
+              
+              <!-- Right Column -->
+              <div>
+                <!-- Année -->
+                <div class="flex items-center text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span class="font-medium">Année:</span>
+                  <span class="ml-2">{{ item.annee || '-' }}</span>
+                </div>
+
+                <!-- Rythme -->
+                <div *ngIf="item.rythme" class="flex items-center text-gray-600 mt-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <span class="font-medium">Rythme:</span>
+                  <span class="ml-2">{{ item.rythme }}</span>
+                </div>
+
+                <!-- Makam -->
+                <div *ngIf="item.makam" class="flex items-center text-gray-600 mt-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                  <span class="font-medium">Makam:</span>
+                  <span class="ml-2">{{ item.makam }}</span>
+                </div>
+                
+                <!-- Fichiers disponibles -->
+                <div class="flex items-center text-gray-600 mt-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span class="font-medium">Fichiers:</span>
+                  <div class="ml-2 flex space-x-1">
+                    <span *ngIf="item.paroles" class="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-800">Paroles</span>
+                    <span *ngIf="item.fichierPartition" class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-800">Partition</span>
+                    <span *ngIf="item.audio" class="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-800">Audio</span>
+                    <span *ngIf="!item.paroles && !item.fichierPartition && !item.audio">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="mt-6 flex flex-wrap gap-3 justify-end">
+              <!-- Edit Button -->
+              <button 
+                (click)="selectChanson(item)" 
+                class="px-4 py-2 text-white rounded-md transition-colors text-sm flex items-center gap-2"
+                [ngClass]="activeTab === 'chansons' ? 'bg-tertiary hover:bg-quaternary' : 'bg-purple-600 hover:bg-purple-700'"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Modifier
+              </button>
+              
+              <!-- Delete Button -->
+              <button 
+                (click)="deleteChanson(item.idDemande!)" 
+                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm flex items-center gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="paginatedItems.length === 0" class="bg-white p-8 rounded-lg shadow-lg text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 class="text-xl font-medium text-gray-900 mb-2">
+            {{ activeTab === 'chansons' ? 'Aucune chanson trouvée' : 'Aucun instrumental trouvé' }}
+          </h3>
+          <p class="text-gray-600">
+            Essayez de modifier vos filtres ou d'ajouter 
+            {{ activeTab === 'chansons' ? 'une nouvelle chanson' : 'un nouvel instrumental' }}.
+          </p>
+        </div>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div *ngIf="totalPages > 1" class="flex justify-center mt-6">
+        <nav class="flex items-center space-x-2">
+          <!-- Previous Page Button -->
+          <button 
+            (click)="changePage(currentPage - 1)" 
+            [disabled]="currentPage === 1"
+            [ngClass]="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-tertiary'"
+            class="px-3 py-2 bg-quaternary text-white rounded-md transition-colors flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          <!-- Page Numbers -->
+          <div class="flex space-x-1">
+            <button 
+              *ngFor="let page of pages" 
+              (click)="changePage(page)" 
+              [ngClass]="page === currentPage ? 'bg-tertiary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+              class="px-4 py-2 rounded-md transition-colors"
+            >
+              {{ page }}
+            </button>
+          </div>
+          
+          <!-- Next Page Button -->
+          <button 
+            (click)="changePage(currentPage + 1)" 
+            [disabled]="currentPage === totalPages"
+            [ngClass]="currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-tertiary'"
+            class="px-3 py-2 bg-quaternary text-white rounded-md transition-colors flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-primary py-6 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center text-white">
+        <p class="font-amiri">© 2025 Club Farabi - نادي الفارابي للموسيقى العربية  </p>
+      </div>
+    </div>
+  </footer>
+</div>

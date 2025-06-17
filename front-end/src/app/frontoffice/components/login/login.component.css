@@ -1,0 +1,185 @@
+/* Main container animations */
+.flex.flex-col.md\:flex-row {
+  animation: fadeIn 0.8s ease-out;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Left side styling */
+.bg-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.2) 100%);
+  pointer-events: none;
+}
+
+/* Logo animations */
+.bg-primary h1 {
+  animation: fadeInDown 1s ease-out;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bg-primary p {
+  animation: fadeInDown 1.2s ease-out;
+}
+
+.bg-primary .bg-tertiary {
+  animation: scaleIn 1.4s ease-out;
+}
+
+/* Musical note animation */
+.h-16.w-16.text-tertiary {
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+}
+
+/* Right side form styling */
+.md\:w-3\/5 {
+  animation: fadeInRight 0.8s ease-out;
+}
+
+/* Form input enhancements */
+input[type="email"], input[type="password"] {
+  transition: all 0.3s ease;
+  border-width: 2px;
+}
+
+input[type="email"]:focus, input[type="password"]:focus {
+  border-color: var(--tertiary);
+  box-shadow: 0 0 0 3px rgba(var(--tertiary-rgb), 0.2);
+  transform: translateY(-1px);
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--tertiary);
+  border-color: var(--tertiary);
+}
+
+/* Button animations */
+button[type="submit"] {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button[type="submit"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+button[type="submit"]:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+/* Quote styling */
+.text-white.font-amiri {
+  letter-spacing: 0.5px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bg-primary {
+    padding: 3rem 1.5rem;
+  }
+  
+  .md\:w-3\/5 {
+    padding: 2rem 1.5rem;
+  }
+  
+  .py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}

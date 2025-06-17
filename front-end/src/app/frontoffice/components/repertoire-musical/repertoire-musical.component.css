@@ -1,0 +1,579 @@
+/* Animation for cards */
+.space-y-6 > div {
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.space-y-6 > div:hover {
+  transform: translateY(-5px);
+}
+
+/* Custom scrollbar for page */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Arabic font styling for titles */
+h1 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Enhanced focus styles */
+input:focus, select:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--tertiary-rgb), 0.3);
+}
+
+/* Card styling */
+.bg-white {
+  border-left: 4px solid transparent;
+  transition: border-left-color 0.3s ease;
+}
+
+.bg-white:hover {
+  border-left-color: var(--tertiary);
+}
+
+/* Fade-in animation for content */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.max-w-7xl, .max-w-3xl {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Staggered animation for cards */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.space-y-6 > div {
+  animation: slideIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.space-y-6 > div:nth-child(1) { animation-delay: 0.1s; }
+.space-y-6 > div:nth-child(2) { animation-delay: 0.2s; }
+.space-y-6 > div:nth-child(3) { animation-delay: 0.3s; }
+.space-y-6 > div:nth-child(4) { animation-delay: 0.4s; }
+.space-y-6 > div:nth-child(5) { animation-delay: 0.5s; }
+.space-y-6 > div:nth-child(n+6) { animation-delay: 0.6s; }
+
+/* Lyrics section animation */
+@keyframes expandIn {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 1000px; }
+}
+
+/* Animation for lyrics section */
+.lyrics-section {
+  animation: expandIn 0.5s ease-out forwards;
+  overflow: hidden;
+}
+
+/* Image hover effect */
+.flex.justify-center img {
+  transition: transform 0.3s ease;
+  max-height: 500px;
+}
+
+.flex.justify-center img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .mt-6.flex.flex-wrap {
+    justify-content: center;
+  }
+}
+
+/* Modal animations */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fixed.inset-0 {
+  animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+.fixed.inset-0 > div {
+  animation: modalScaleIn 0.3s ease-out forwards;
+}
+
+/* Modal close button hover effect */
+.absolute.top-2.right-2 {
+  transition: all 0.2s ease;
+  opacity: 0.9;
+}
+
+.absolute.top-2.right-2:hover {
+  transform: rotate(90deg);
+  opacity: 1;
+}
+
+/* Download button hover effect */
+.absolute.bottom-2.right-2 {
+  transition: all 0.3s ease;
+  opacity: 0.9;
+}
+
+.absolute.bottom-2.right-2:hover {
+  transform: translateY(-2px);
+  opacity: 1;
+}
+
+.absolute.bottom-2.right-2:hover svg {
+  animation: bounce 0.5s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Modal image styles */
+.max-h-\[80vh\] {
+  object-fit: contain;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  .absolute.top-2.right-2 {
+    top: 10px;
+    right: 10px;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .absolute.bottom-2.right-2 {
+    bottom: 10px;
+    right: 10px;
+    padding: 10px;
+  }
+  
+  .fixed.inset-0 {
+    padding: 0;
+  }
+  
+  .max-h-\[80vh\] {
+    max-height: 85vh;
+    max-width: 95vw;
+  }
+}
+
+/* Pagination styles */
+.flex.items-center.space-x-2 {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.flex.items-center.space-x-2 button {
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.flex.items-center.space-x-2 button:disabled {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Results summary styles */
+.max-w-3xl.mx-auto.mb-4.flex {
+  padding: 0 8px;
+}
+
+/* Page transition animation */
+@keyframes pageChange {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.space-y-6 {
+  animation: pageChange 0.3s ease-out;
+}
+
+/* Enhanced search input */
+.flex.flex-col.md\:flex-row {
+  position: relative;
+}
+
+input[type="text"] {
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border-width: 2px;
+}
+
+input[type="text"]:focus {
+  border-color: var(--tertiary);
+  box-shadow: 0 0 0 3px rgba(var(--tertiary-rgb), 0.2);
+  transform: translateY(-1px);
+}
+
+/* Reset button enhancements */
+.flex-shrink-0 button {
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.flex-shrink-0 button:hover {
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Filter section animation */
+.max-w-3xl.mx-auto.bg-white {
+  animation: fadeIn 0.5s ease-out;
+  border-bottom: 3px solid var(--tertiary);
+}
+
+/* Mobile fullscreen styles */
+:host {
+  display: block;
+}
+
+/* Fix for iOS iframe scrolling issues */
+iframe {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  background-color: white;
+  border: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* PDF content container */
+.pdf-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100%;
+  transform-origin: top center;
+}
+
+/* Animation for fullscreen transition */
+.fixed.inset-0 {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Ensure controls are visible in fullscreen mode */
+.fixed.inset-0 .absolute {
+  z-index: 10000;
+}
+
+/* Prevent body scrolling when in fullscreen mode */
+:host-context(body.overflow-hidden) {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Control bar styling to match screenshot */
+.bg-gray-700.bg-opacity-90 {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure PDF is properly centered and scaled */
+.h-full.w-full.bg-black {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Full-screen specific styles */
+.fixed.inset-0.bg-black {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.fixed.inset-0.bg-black .w-full.h-full {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* Allow pinch-zoom on mobile */
+.w-\[90\%\].h-\[90\%\], .w-full.h-full {
+  touch-action: manipulation;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scroll container styles */
+.overflow-auto {
+  border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overflow: auto;
+}
+
+/* Add some padding to the PDF container on mobile */
+@media (max-width: 640px) {
+  .h-full.w-full.bg-black {
+    padding: 0;
+  }
+  
+  iframe {
+    border-radius: 12px;
+  }
+  
+  /* Improve touch scrolling on mobile */
+  .overflow-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure full-screen mode takes up entire screen on mobile */
+  .fixed.inset-0.bg-black {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+/* PDF Viewer Styles */
+.pdf-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.pdf-scroll-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.pdf-content {
+  width: 100%;
+  height: 100%;
+}
+
+/* Override ng2-pdf-viewer styles for better mobile display */
+::ng-deep .ng2-pdf-viewer-container {
+  position: relative !important;
+  height: auto !important;
+  min-height: 500px !important;
+  overflow: visible !important;
+}
+
+::ng-deep .page {
+  margin-bottom: 10px !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .pdf-scroll-container {
+    padding: 10px 0;
+  }
+  
+  /* Ensure controls are more accessible on mobile */
+  .absolute.top-4 .bg-gray-700 {
+    padding: 8px 12px;
+  }
+  
+  .absolute.top-4 button {
+    margin: 0 8px;
+  }
+  
+  /* Improve mobile scrolling */
+  .overflow-auto {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto !important;
+    max-height: 90vh !important;
+  }
+  
+  /* Make sure PDF content displays fully on mobile */
+  ::ng-deep .ng2-pdf-viewer-container {
+    min-height: 800px !important;
+  }
+}
+
+iframe {
+  border: none;
+  width: 100%;
+  height: 5000px; /* This ensures all pages of PDF are visible */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.modal-content {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-body {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.control-button {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.control-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Fullscreen styles */
+:fullscreen .modal-content {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+:fullscreen .modal-header {
+  padding: 15px 20px;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .modal-header {
+    padding: 8px 15px;
+  }
+  
+  .modal-title {
+    font-size: 1rem;
+  }
+  
+  .control-button {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+  }
+  
+  .modal-content {
+    width: 95%;
+    height: 85%;
+  }
+}
+
+/* Loading spinner */
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 10;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

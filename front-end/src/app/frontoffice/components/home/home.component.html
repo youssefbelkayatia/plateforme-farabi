@@ -1,0 +1,601 @@
+<app-navbar></app-navbar>
+
+<div class="min-h-screen bg-secondary font-inter text-white flex flex-col">
+
+  <!-- Section À propos -->
+  <section id="about" class="container mx-auto px-4 py-12 flex flex-col md:flex-row items-center gap-10">
+    <div class="flex-1">
+      <h2 class="text-2xl md:text-3xl font-bold text-tertiary mb-4 flex items-center gap-2 font-playfair">
+        <!-- Icône Note de Musique -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13"/>
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="18" cy="16" r="3" />
+        </svg>
+        À propos du Club Farabi
+      </h2>
+      <p class="text-lg text-gray-200 mb-4 font-raleway leading-relaxed">
+        Créée en 1980, le club Al-Farabi est une association vouée à<br>
+        l'interprétation du patrimoine musical arabo-oriental sous<br>
+        toutes ses formes : <span class="font-amiri italic">Wasla, Taqtûqa, Samâ'î, Muwashah, Dawr</span>, etc.<br>
+        Les membres du club ont donné de nombreux concerts en Tunisie<br>
+        et à l'étranger, participant à de multiples festivals nationaux<br>
+        et internationaux. Par leurs réinterprétations des œuvres<br>
+        classiques arabes, ils rendent hommage à l'âge d'or de la<br>
+        chanson orientale à travers Om Kolthoum, Abd Al-Wahab, Sunbati et bien d'autres artistes.
+      </p>
+      <p class="text-md text-gray-300 flex items-center gap-2 font-raleway leading-relaxed">
+        <!-- Icône Communauté/Utilisateurs -->
+        
+        L'ensemble du Club Farabi de Musique arabe est né en 1980, mais ne se fit connaître qu'en 1986, lors d'une émission culturelle à la télévision à la suite de laquelle de nombreuses voix exprimèrent le désir de le voir se reproduire dans des concerts. En effet, ses débuts officiels furent au Théâtre National de Tunis en 1988, suivis par de nombreuses participations au festival de la Médina (1997, 1998, 1999, 2005 et 2007), au festival de la musique arabe de l'Opéra du Caire (1999), en France (2000, 2001, 2003, 2005 et 2007) et au Maroc (2006).
+      </p>
+    </div>
+    <div class="flex-1 flex justify-center">
+      <img src="./assets/images/f0.jpg" />
+    </div>
+  </section>
+
+  <!-- Section Histoire -->
+  <section id="history" class="bg-primary py-8">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-tertiary mb-6 flex items-center gap-2 font-playfair">
+        <!-- Icône Horloge/Histoire -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Notre Histoire
+      </h2>
+      
+      <div class="mb-6">
+        <p class="text-md text-gray-200 mb-2 font-raleway leading-relaxed">
+          Le nom Al-Farabi est attribué au philosophe arabe et musicien, inventeur de l'instrument "<span class="font-lateef text-lg">qanûn</span>".
+        </p>
+        <p class="text-md text-gray-200 mb-2 font-raleway leading-relaxed">
+          Depuis sa création, le club a connu, comme beaucoup d'associations, différentes phases culturelles qui se renouvellent tous les cycles de travail. Voici les moments les plus importants de l'histoire du club depuis sa création:
+        </p>
+      </div>
+
+      <!-- Desktop Timeline View (hidden on mobile) -->
+      <div class="desktop-timeline hidden md:block">
+        <!-- First Timeline Row (always visible) -->
+        <div class="timeline-section mb-10">
+          <div class="timeline-line"></div>
+          
+          <!-- 1980 -->
+          <div class="timeline-row">
+            <div class="timeline-point bg-red-600"></div>
+            <div class="timeline-date text-red-600">1980</div>
+            <div class="timeline-content">Fondation du club</div>
+          </div>
+          
+          <!-- 1986 -->
+          <div class="timeline-row">
+            <div class="timeline-point bg-gray-400"></div>
+            <div class="timeline-date text-gray-400">1986</div>
+            <div class="timeline-content">Première apparition du club à la télévision tunisienne</div>
+          </div>
+          
+          <!-- 1987 -->
+          <div class="timeline-row">
+            <div class="timeline-point bg-blue-600"></div>
+            <div class="timeline-date text-blue-600">1987</div>
+            <div class="timeline-content">Première apparition publique à SOS Village</div>
+          </div>
+          
+          <!-- 1988 -->
+          <div class="timeline-row">
+            <div class="timeline-point bg-yellow-500"></div>
+            <div class="timeline-date text-yellow-500">1988</div>
+            <div class="timeline-content">Première participation au Festival de la Médina (Ouverture du festival à Dar Al-Saram)</div>
+          </div>
+        </div>
+        
+        <!-- Button to show more (only visible when timeline is not expanded) -->
+        <div *ngIf="!isTimelineExpanded" class="text-center my-4">
+          <button (click)="toggleTimelineExpand()" class="bg-tertiary text-white py-2 px-4 rounded-md hover:bg-opacity-80 transition-all">
+            Voir plus
+          </button>
+        </div>
+        
+        <!-- Additional Timeline Rows (hidden by default) -->
+        <div *ngIf="isTimelineExpanded">
+          <!-- Second Timeline Row -->
+          <div class="timeline-section mb-10">
+            <div class="timeline-line"></div>
+            
+            <!-- 1997 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-green-500"></div>
+              <div class="timeline-date text-green-500">1997</div>
+              <div class="timeline-content">Le club a été officiellement créé en tant qu'association culturelle à but non commercial</div>
+            </div>
+            
+            <!-- 1998 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-purple-500"></div>
+              <div class="timeline-date text-purple-500">1998</div>
+              <div class="timeline-content">Première participation hors de Tunisie à Grenoble</div>
+            </div>
+            
+            <!-- 1999 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-blue-400"></div>
+              <div class="timeline-date text-blue-400">1999</div>
+              <div class="timeline-content">Participation à la huitième session du Festival de musique de l'Opéra du Caire</div>
+            </div>
+            
+            <!-- 2000 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-red-700"></div>
+              <div class="timeline-date text-red-700">2000</div>
+              <div class="timeline-content">Clôture du festival El-Madina de Sfax</div>
+            </div>
+          </div>
+          
+          <!-- Third Timeline Row -->
+          <div class="timeline-section mb-10">
+            <div class="timeline-line"></div>
+            
+            <!-- 2005 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-teal-500"></div>
+              <div class="timeline-date text-teal-500">2005</div>
+              <div class="timeline-content">Clôture du festival El-Madina de Tunis</div>
+            </div>
+            
+            <!-- 2007-2011 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-green-500"></div>
+              <div class="timeline-date text-green-500">2007-2011</div>
+              <div class="timeline-content">IMA PARIS</div>
+            </div>
+            
+            <!-- 2009 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-gray-400"></div>
+              <div class="timeline-date text-gray-400">2009</div>
+              <div class="timeline-content">Le début du partenariat avec l'artiste Lotfi Bouchnak</div>
+            </div>
+            
+            <!-- 2010 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-purple-600 pulse-animation"></div>
+              <div class="timeline-date text-purple-600">2010</div>
+              <div class="timeline-content">30 ans anniversaire du club</div>
+            </div>
+          </div>
+          
+          <!-- Fourth Timeline Row -->
+          <div class="timeline-section mb-10">
+            <div class="timeline-line"></div>
+            
+            <!-- 2012 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-blue-500"></div>
+              <div class="timeline-date text-blue-500">2012</div>
+              <div class="timeline-content">
+                <div>- Festival de la Médina</div>
+                <div>- Interprétation de nouvelles mélodies originales du club, composées par le Dr Mohamed Al-Majri</div>
+                <div>- Interprétation de mélodies présentées pour la première fois au public par l'artiste Lotfi Bouchnak</div>
+                <div>- Interprétation de pièces musicales de Malek Ellouze et Jamel Dridi</div>
+              </div>
+            </div>
+            
+            <!-- 2013 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-red-400"></div>
+              <div class="timeline-date text-red-400">2013</div>
+              <div class="timeline-content">
+                <div>Poursuite de l'ouverture du club à des partenariats avec des chanteurs tunisiens :</div>
+                <div>- Lotfi Bouchnak</div>
+                <div>- Mehrzia Touil</div>
+                <div>- Dorsaf Hamdani</div>
+              </div>
+            </div>
+            
+            <!-- 2017 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-yellow-500"></div>
+              <div class="timeline-date text-yellow-500">2017</div>
+              <div class="timeline-content">Production d'œuvres originales du club, composées par l'artiste Lotfi Bouchnak et supervisées par le compositeur Abdelkrim Belkaied.</div>
+            </div>
+            
+            <!-- 2018 -->
+            <div class="timeline-row">
+              <div class="timeline-point bg-green-400"></div>
+              <div class="timeline-date text-green-400">2018</div>
+              <div class="timeline-content">Participation au festival de la Médina de Tunis</div>
+            </div>
+          </div>
+          
+          <!-- Fifth Timeline Row - Future Events -->
+          <div class="timeline-section">
+            <div class="timeline-line"></div>
+            
+            <!-- Future Events -->
+            <div class="grid grid-cols-4 w-full">
+              <!-- 2024 -->
+              <div class="col-span-1">
+                <div class="timeline-row">
+                  <div class="timeline-point bg-blue-300"></div>
+                  <div class="timeline-date text-blue-300">2024</div>
+                  <div class="timeline-content">Une séance d'enregistrement de quelques chansons et morceaux musicaux du répertoire du club</div>
+                </div>
+              </div>
+              
+              
+              <!-- 2025 - Positioned under 2013 -->
+              <div class="col-span-1">
+                <div class="timeline-row">
+                  <div class="timeline-point bg-blue-300"></div>
+                  <div class="timeline-date text-blue-300">2025</div>
+                  <div class="timeline-content">Cérémonie d'ouverture des Journées Culturelles de la Commune de Sfax en 2025</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Button to show less -->
+          <div class="text-center my-4">
+            <button (click)="toggleTimelineExpand()" class="bg-tertiary text-white py-2 px-4 rounded-md hover:bg-opacity-80 transition-all">
+              Voir moins
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Timeline View -->
+      <div class="mobile-timeline md:hidden">
+        <!-- Initial 4 dates (always visible) -->
+        <!-- 1980 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot bg-red-600"></div>
+          <div class="timeline-year text-red-600">1980</div>
+          <div class="timeline-desc">Fondation du club</div>
+        </div>
+        
+        <!-- 1986 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot bg-gray-400"></div>
+          <div class="timeline-year text-gray-400">1986</div>
+          <div class="timeline-desc">Première apparition du club à la télévision tunisienne</div>
+        </div>
+        
+        <!-- 1987 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot bg-blue-600"></div>
+          <div class="timeline-year text-blue-600">1987</div>
+          <div class="timeline-desc">Première apparition publique à SOS Village</div>
+        </div>
+        
+        <!-- 1988 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot bg-yellow-500"></div>
+          <div class="timeline-year text-yellow-500">1988</div>
+          <div class="timeline-desc">Première participation au Festival de la Médina (Ouverture du festival à Dar Al-Saram)</div>
+        </div>
+        
+        <!-- Button to show more (only visible when timeline is not expanded) -->
+        <div *ngIf="!isTimelineExpanded" class="text-center my-4">
+          <button (click)="toggleTimelineExpand()" class="bg-tertiary text-white py-2 px-4 rounded-md hover:bg-opacity-80 transition-all">
+            Voir plus
+          </button>
+        </div>
+        
+        <!-- Additional dates (hidden by default) -->
+        <div *ngIf="isTimelineExpanded" class="timeline-entries-expanded">
+          <!-- 1997 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-green-500"></div>
+            <div class="timeline-year text-green-500">1997</div>
+            <div class="timeline-desc">Le club a été officiellement créé en tant qu'association culturelle à but non commercial</div>
+          </div>
+          
+          <!-- 1998 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-purple-500"></div>
+            <div class="timeline-year text-purple-500">1998</div>
+            <div class="timeline-desc">Première participation hors de Tunisie à Grenoble</div>
+          </div>
+          
+          <!-- 1999 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-blue-400"></div>
+            <div class="timeline-year text-blue-400">1999</div>
+            <div class="timeline-desc">Participation à la huitième session du Festival de musique de l'Opéra du Caire</div>
+          </div>
+          
+          <!-- 2000 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-red-700"></div>
+            <div class="timeline-year text-red-700">2000</div>
+            <div class="timeline-desc">Clôture du festival El-Madina de Sfax</div>
+          </div>
+          
+          <!-- 2005 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-teal-500"></div>
+            <div class="timeline-year text-teal-500">2005</div>
+            <div class="timeline-desc">Clôture du festival El-Madina de Tunis</div>
+          </div>
+          
+          <!-- 2007-2011 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-green-500"></div>
+            <div class="timeline-year text-green-500">2007-2011</div>
+            <div class="timeline-desc">IMA PARIS</div>
+          </div>
+          
+          <!-- 2009 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-gray-400"></div>
+            <div class="timeline-year text-gray-400">2009</div>
+            <div class="timeline-desc">Le début du partenariat avec l'artiste Lotfi Bouchnak</div>
+          </div>
+          
+          <!-- 2010 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-purple-600 pulse-animation"></div>
+            <div class="timeline-year text-purple-600">2010</div>
+            <div class="timeline-desc">30 ans anniversaire du club</div>
+          </div>
+          
+          <!-- 2012 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-blue-500"></div>
+            <div class="timeline-year text-blue-500">2012</div>
+            <div class="timeline-desc">
+              <div>- Festival de la Médina</div>
+              <div>- Interprétation de nouvelles mélodies originales du club</div>
+              <div>- Interprétation de mélodies par l'artiste Lotfi Bouchnak</div>
+            </div>
+          </div>
+          
+          <!-- 2013 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-red-400"></div>
+            <div class="timeline-year text-red-400">2013</div>
+            <div class="timeline-desc">
+              <div>Partenariats avec:</div>
+              <div>- Lotfi Bouchnak</div>
+              <div>- Mehrzia Touil</div>
+              <div>- Dorsaf Hamdani</div>
+            </div>
+          </div>
+          
+          <!-- 2017 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-yellow-500"></div>
+            <div class="timeline-year text-yellow-500">2017</div>
+            <div class="timeline-desc">Production d'œuvres originales du club, composées par l'artiste Lotfi Bouchnak</div>
+          </div>
+          
+          <!-- 2018 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-green-400"></div>
+            <div class="timeline-year text-green-400">2018</div>
+            <div class="timeline-desc">Participation au festival de la Médina de Tunis</div>
+          </div>
+          
+          <!-- 2024 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-blue-300"></div>
+            <div class="timeline-year text-blue-300">2024</div>
+            <div class="timeline-desc">Une séance d'enregistrement de quelques chansons et morceaux musicaux du répertoire du club</div>
+          </div>
+          
+          <!-- 2025 -->
+          <div class="timeline-entry">
+            <div class="timeline-dot bg-blue-300"></div>
+            <div class="timeline-year text-blue-300">2025</div>
+            <div class="timeline-desc">Cérémonie d'ouverture des Journées Culturelles de la Commune de Sfax en 2025</div>
+          </div>
+          
+          <!-- Button to show less (only visible at the end of expanded timeline) -->
+          <div class="text-center my-4">
+            <button (click)="toggleTimelineExpand()" class="bg-tertiary text-white py-2 px-4 rounded-md hover:bg-opacity-80 transition-all">
+              Voir moins
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <style>
+        /* Desktop Timeline Styles */
+        .desktop-timeline .timeline-section {
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          overflow-x: auto;
+          padding: 30px 0 10px;
+        }
+        
+        .desktop-timeline .timeline-line {
+          position: absolute;
+          top: 10px;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(to right, #ef4444, #3b82f6, #10b981);
+        }
+        
+        .desktop-timeline .timeline-row {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative;
+          min-width: 150px;
+          max-width: 200px;
+          margin: 0 10px;
+        }
+        
+        .desktop-timeline .timeline-point {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          margin-top: -33px;
+          margin-bottom: 10px;
+          z-index: 2;
+        }
+        
+        .desktop-timeline .timeline-date {
+          font-weight: bold;
+          font-size: 0.8rem;
+          margin-bottom: 5px;
+        }
+        
+        .desktop-timeline .timeline-content {
+          font-size: 0.7rem;
+          color: #9ca3af;
+          text-align: center;
+          line-height: 1.2;
+        }
+        
+        /* Mobile Timeline Styles */
+        .mobile-timeline {
+          position: relative;
+          padding-left: 20px;
+          display: block;
+        }
+        
+        @media (min-width: 768px) {
+          .mobile-timeline {
+            display: none;
+          }
+        }
+        
+        .mobile-timeline:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 1px;
+          background: linear-gradient(to bottom, #ef4444, #3b82f6, #10b981, #8b5cf6);
+        }
+        
+        .timeline-entry {
+          position: relative;
+          margin-bottom: 30px;
+        }
+        
+        .timeline-dot {
+          position: absolute;
+          left: -23px;
+          top: 5px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+        }
+        
+        .timeline-year {
+          font-weight: bold;
+          font-size: 0.9rem;
+          margin-bottom: 4px;
+        }
+        
+        .timeline-desc {
+          font-size: 0.8rem;
+          color: #9ca3af;
+          line-height: 1.4;
+        }
+        
+        @keyframes pulse {
+          0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7); }
+          70% { box-shadow: 0 0 0 4px rgba(147, 51, 234, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); }
+        }
+        
+        .pulse-animation {
+          animation: pulse 2s infinite;
+        }
+      </style>
+    </div>
+  </section>
+
+  <!-- Section Galerie -->
+  <section id="gallery" class="container mx-auto px-4 py-12">
+    <h2 class="text-2xl md:text-3xl font-bold text-tertiary mb-8 flex items-center gap-2 font-playfair">
+      <!-- Icône Appareil Photo -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h2l2-3h10l2 3h2a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z" />
+        <circle cx="12" cy="13" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+      </svg>
+      Galerie
+    </h2>
+    
+    <!-- Image Carousel -->
+    <div class="relative max-w-3xl mx-auto">
+      <!-- Current Image -->
+      <div class="aspect-w-16 aspect-h-9 bg-secondary rounded-lg overflow-hidden shadow-md flex items-center justify-center border-2 border-tertiary relative cursor-pointer" (click)="openLightbox(galleryImages[currentImageIndex].path)">
+        <img *ngIf="galleryImages.length > 0" [src]="galleryImages[currentImageIndex].path" [alt]="galleryImages[currentImageIndex].title" class="object-contain w-full h-full" />
+        
+      </div>
+      
+      <!-- Navigation Buttons -->
+      <button (click)="prevImage()" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-tertiary bg-opacity-80 text-white p-2 rounded-r-md hover:bg-opacity-100 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button (click)="nextImage()" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-tertiary bg-opacity-80 text-white p-2 rounded-l-md hover:bg-opacity-100 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      <!-- Dots Indicator -->
+      <div class="flex justify-center mt-4 space-x-2">
+        <button *ngFor="let image of galleryImages; let i = index" 
+                (click)="currentImageIndex = i"
+                class="w-3 h-3 rounded-full"
+                [ngClass]="{'bg-tertiary': currentImageIndex === i, 'bg-gray-400': currentImageIndex !== i}">
+        </button>
+      </div>
+    </div>
+    
+    <!-- YouTube Video -->
+    <div class="aspect-w-16 aspect-h-9 bg-secondary rounded-lg overflow-hidden shadow-md flex items-center justify-center border-2 border-tertiary relative mt-8 max-w-3xl mx-auto">
+        <!-- Icône Vidéo Overlay -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-2 left-2 h-6 w-6 text-tertiary bg-secondary bg-opacity-80 rounded-full p-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <polygon points="9.5,7.5 16.5,12 9.5,16.5" fill="currentColor"/>
+          <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+      <iframe src="https://www.youtube.com/embed/waMjV7fUjI8" title="Vidéo YouTube" allowfullscreen class="w-full h-full"></iframe>
+    </div>
+    
+    <p class="text-center text-gray-400 mt-6 flex items-center justify-center gap-2">
+      <!-- Icône Étincelles -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      Plus de photos et vidéos bientôt disponibles !
+    </p>
+  </section>
+
+  <!-- Pied de page -->
+  <footer class="bg-primary py-6 mt-auto">
+    <div class="container mx-auto px-4 text-center text-gray-400 flex items-center justify-center gap-2 font-raleway">
+      <!-- Icône Copyright -->
+      
+      © 2025 Club Farabi - نادي الفارابي للموسيقى العربية
+    </div>
+  </footer>
+</div>
+
+<!-- Lightbox -->
+<div *ngIf="showLightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+  <div class="relative max-w-4xl w-full">
+    <!-- Close button -->
+    <button (click)="closeLightbox()" class="absolute top-4 right-4 text-white hover:text-tertiary z-10">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    
+    <!-- Image -->
+    <img [src]="currentImage" alt="Image en plein écran" class="max-h-[80vh] max-w-full mx-auto object-contain rounded-lg" />
+  </div>
+</div>

@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-font: 'Playfair Display', 'Amiri', serif;
+  --secondary-font: 'Raleway', 'Noto Sans Arabic', sans-serif;
+  --arabic-font: 'Lateef', 'Amiri', serif;
+}
+
+body {
+  font-family: var(--secondary-font);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--primary-font);
+  font-weight: 600;
+}
+
+.arabic-text {
+  font-family: var(--arabic-font);
+}
+
+/* Custom utility classes */
+.font-primary {
+  font-family: var(--primary-font);
+}
+
+.font-secondary {
+  font-family: var(--secondary-font);
+}
+
+.font-arabic {
+  font-family: var(--arabic-font);
+}

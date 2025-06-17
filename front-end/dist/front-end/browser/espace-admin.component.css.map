@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/backoffice/components/espace-admin/espace-admin.component.css"],
+  "sourcesContent": ["/* Prevent body scrolling when modal is open */\r\n.modal-open {\r\n  overflow: hidden;\r\n}\r\n\r\n/* Better file input styling for mobile */\r\ninput[type=\"file\"] {\r\n  font-size: 14px;\r\n}\r\n\r\n@media (max-width: 640px) {\r\n  input[type=\"file\"] {\r\n    font-size: 12px;\r\n  }\r\n}\r\n"],
+  "mappings": ";AACA,CAAA;AACE,YAAA;AACF;AAGA,KAAA,CAAA;AACE,aAAA;AACF;AAEA,OAAA,CAAA,SAAA,EAAA;AACE,OAAA,CAAA;AACE,eAAA;AACF;AACF;",
+  "names": []
+}
