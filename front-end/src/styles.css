@@ -3,20 +3,33 @@
 @tailwind utilities;
 
 :root {
-  --primary-font: 'Playfair Display', 'Amiri', serif;
+  /* Typography */
+  --primary-font: 'Playfair Display', serif;
   --secondary-font: 'Raleway', 'Noto Sans Arabic', sans-serif;
   --arabic-font: 'Lateef', 'Amiri', serif;
+  
+  /* App colors */
+  --primary-color: #1a365d;
+  --secondary-color: #f0f4f8;
+  --tertiary-color: #2c5282;
+  --quaternary-color: #1e3a8a;
 }
 
+/* Global styles */
 body {
   font-family: var(--secondary-font);
+  margin: 0;
+  padding: 0;
+  background-color: var(--secondary-color);
+  color: #333;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--primary-font);
-  font-weight: 600;
+  color: var(--primary-color);
 }
 
+/* Arabic text styling */
 .arabic-text {
   font-family: var(--arabic-font);
 }

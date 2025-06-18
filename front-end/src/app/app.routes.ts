@@ -3,8 +3,10 @@ import { HomeComponent } from './frontoffice/components/home/home.component';
 import { RepertoireMusicalComponent } from './frontoffice/components/repertoire-musical/repertoire-musical.component';
 import { LoginComponent } from './frontoffice/components/login/login.component';
 import { EspaceAdminComponent } from './backoffice/components/espace-admin/espace-admin.component';
-export const routes: Routes = [
+import { AuthGuard } from './guards/auth.guard';
+import { RegisterComponent } from './frontoffice/components/register/register.component';
 
+export const routes: Routes = [
     {
         path: 'home',
         component: HomeComponent,
@@ -12,6 +14,11 @@ export const routes: Routes = [
     {
         path: 'repertoire',
         component: RepertoireMusicalComponent,
+        canActivate: [AuthGuard],
+        data: { 
+            requiresMembre: true,
+            requiresAcceptedStatus: true
+        }
     },
     {
         path: 'login',
@@ -20,6 +27,17 @@ export const routes: Routes = [
     {
         path: 'espace-admin',
         component: EspaceAdminComponent,
+        canActivate: [AuthGuard],
+        data: { 
+            requiresAdmin: true,
+            requiresAcceptedStatus: true
+        }
+    },
+
+    {
+        path: 'register',
+        component: RegisterComponent,
+        
     },
 
 
@@ -27,9 +45,5 @@ export const routes: Routes = [
         path: '',
         redirectTo: '/home',
         pathMatch: 'full'
-      }
-
-
-
-
+    }
 ];

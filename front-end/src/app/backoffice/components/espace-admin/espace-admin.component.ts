@@ -10,6 +10,8 @@ import { MakamType } from '../../../Model/MakamType.enum';
 import { ChansonType } from '../../../Model/ChansonType.enum';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartitionService } from '../../../services/partition.service';
+import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-espace-admin',
@@ -71,7 +73,9 @@ export class EspaceAdminComponent implements OnInit {
     private instrumentalService: InstrumentalService,
     private fb: FormBuilder,
     private renderer: Renderer2,
-    private partitionService: PartitionService
+    private partitionService: PartitionService,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.chansonForm = this.fb.group({
       titre: ['', Validators.required],
@@ -270,12 +274,23 @@ export class EspaceAdminComponent implements OnInit {
     this.isEditingInstrumental = false;
     this.selectedChanson = null;
     this.selectedInstrumental = null;
-    this.errorMessage = '';
-    this.successMessage = '';
+    
+    // Preserve main page messages when closing modal
+    // This allows success/error messages to remain visible after modal closes
+    if (this.showModalSuccess) {
+      this.successMessage = this.modalSuccessMessage;
+    }
+    if (this.showModalError) {
+      this.errorMessage = this.modalErrorMessage;
+    }
+    
+    // Clear modal-specific states
     this.showModalSuccess = false;
     this.modalSuccessMessage = '';
     this.showModalError = false;
     this.modalErrorMessage = '';
+    
+    // Reset file inputs
     this.parolesFile = null;
     this.partitionFile = null;
     this.audioFile = null;
@@ -283,6 +298,8 @@ export class EspaceAdminComponent implements OnInit {
     this.partitionImages = [];
     this.partitionImagesPreview = [];
     this.partitionPdfTitle = '';
+    
+    // Remove modal-related classes
     this.renderer.removeClass(document.body, 'modal-open');
     this.preventBodyScroll(false);
   }
@@ -363,6 +380,7 @@ export class EspaceAdminComponent implements OnInit {
       if (!this.parolesFile || !this.partitionFile) {
         this.showModalError = true;
         this.modalErrorMessage = 'Veuillez sélectionner les fichiers requis (paroles et partition)';
+        this.errorMessage = this.modalErrorMessage; // Sync messages
         this.isLoading = false;
         return;
       }
@@ -375,10 +393,12 @@ export class EspaceAdminComponent implements OnInit {
         this.audioFile || undefined
       ).subscribe({
         next: (response) => {
-          // Show success message in the modal
+          // Show success message in the modal and sync with main page
           this.showModalSuccess = true;
           this.modalSuccessMessage = 'Chanson ajoutée avec succès';
+          this.successMessage = this.modalSuccessMessage; // Sync messages
           this.showModalError = false;
+          this.errorMessage = ''; // Clear error message
           this.isLoading = false;
           
           // Close the modal after 3 seconds
@@ -392,6 +412,7 @@ export class EspaceAdminComponent implements OnInit {
         error: (error) => {
           this.showModalError = true;
           this.modalErrorMessage = 'Erreur lors de l\'ajout de la chanson';
+          this.errorMessage = this.modalErrorMessage; // Sync messages
           console.error('Error adding song:', error);
           this.isLoading = false;
         }
@@ -403,6 +424,7 @@ export class EspaceAdminComponent implements OnInit {
       if (!id) {
         this.showModalError = true;
         this.modalErrorMessage = 'ID de chanson invalide';
+        this.errorMessage = this.modalErrorMessage; // Sync messages
         this.isLoading = false;
         return;
       }
@@ -415,10 +437,12 @@ export class EspaceAdminComponent implements OnInit {
         this.audioFile || undefined
       ).subscribe({
         next: (response) => {
-          // Show success message in the modal
+          // Show success message in the modal and sync with main page
           this.showModalSuccess = true;
           this.modalSuccessMessage = 'Chanson mise à jour avec succès';
+          this.successMessage = this.modalSuccessMessage; // Sync messages
           this.showModalError = false;
+          this.errorMessage = ''; // Clear error message
           this.isLoading = false;
           
           // Close the modal after 3 seconds
@@ -433,6 +457,7 @@ export class EspaceAdminComponent implements OnInit {
         error: (error) => {
           this.showModalError = true;
           this.modalErrorMessage = 'Erreur lors de la mise à jour de la chanson';
+          this.errorMessage = this.modalErrorMessage; // Sync messages
           console.error('Error updating song:', error);
           this.isLoading = false;
         }
@@ -443,6 +468,7 @@ export class EspaceAdminComponent implements OnInit {
   deleteChanson(id: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
       this.isLoading = true;
+      this.clearMessages(); // Clear any existing messages
       
       // Check if it's an instrumental or a chanson based on the active tab
       if (this.activeTab === 'instrumentals') {
@@ -450,11 +476,15 @@ export class EspaceAdminComponent implements OnInit {
         this.instrumentalService.deleteInstrumental(id).subscribe({
           next: () => {
             this.successMessage = 'Instrumental supprimé avec succès';
+            this.modalSuccessMessage = this.successMessage; // Sync messages
+            this.showModalSuccess = true;
             this.isLoading = false;
             this.loadChansons();
           },
           error: (error) => {
             this.errorMessage = 'Erreur lors de la suppression de l\'instrumental';
+            this.modalErrorMessage = this.errorMessage; // Sync messages
+            this.showModalError = true;
             console.error('Error deleting instrumental:', error);
             this.isLoading = false;
           }
@@ -464,11 +494,15 @@ export class EspaceAdminComponent implements OnInit {
         this.chansonService.deleteChanson(id).subscribe({
           next: () => {
             this.successMessage = 'Chanson supprimée avec succès';
+            this.modalSuccessMessage = this.successMessage; // Sync messages
+            this.showModalSuccess = true;
             this.isLoading = false;
             this.loadChansons();
           },
           error: (error) => {
             this.errorMessage = 'Erreur lors de la suppression de la chanson';
+            this.modalErrorMessage = this.errorMessage; // Sync messages
+            this.showModalError = true;
             console.error('Error deleting song:', error);
             this.isLoading = false;
           }
@@ -480,12 +514,20 @@ export class EspaceAdminComponent implements OnInit {
   clearMessages(): void {
     this.errorMessage = '';
     this.successMessage = '';
+    this.modalErrorMessage = '';
+    this.modalSuccessMessage = '';
+    this.showModalError = false;
+    this.showModalSuccess = false;
   }
   
   saveInstrumental(): void {
+    // Clear any existing messages before starting
+    this.clearMessages();
+    
     if (this.instrumentalForm.invalid) {
       this.showModalError = true;
       this.modalErrorMessage = 'Veuillez remplir tous les champs obligatoires';
+      this.errorMessage = this.modalErrorMessage; // Sync messages
       return;
     }
     
@@ -532,6 +574,7 @@ export class EspaceAdminComponent implements OnInit {
       if (!id) {
         this.showModalError = true;
         this.modalErrorMessage = 'ID d\'instrumental invalide';
+        this.errorMessage = this.modalErrorMessage; // Sync messages
         this.isLoading = false;
         return;
       }
@@ -543,10 +586,12 @@ export class EspaceAdminComponent implements OnInit {
         this.audioFile || undefined
       ).subscribe({
         next: (response) => {
-          // Show success message in the modal
+          // Show success message in the modal and sync with main page
           this.showModalSuccess = true;
           this.modalSuccessMessage = 'Instrumental mis à jour avec succès';
+          this.successMessage = this.modalSuccessMessage; // Sync messages
           this.showModalError = false;
+          this.errorMessage = ''; // Clear error message
           this.isLoading = false;
           
           // Close the modal after 3 seconds
@@ -563,6 +608,7 @@ export class EspaceAdminComponent implements OnInit {
         error: (error) => {
           this.showModalError = true;
           this.modalErrorMessage = 'Erreur lors de la mise à jour de l\'instrumental';
+          this.errorMessage = this.modalErrorMessage; // Sync messages
           console.error('Error updating instrumental:', error);
           this.isLoading = false;
         }
@@ -573,6 +619,7 @@ export class EspaceAdminComponent implements OnInit {
       if (!this.partitionFile) {
         this.showModalError = true;
         this.modalErrorMessage = 'Veuillez sélectionner le fichier partition requis';
+        this.errorMessage = this.modalErrorMessage; // Sync messages
         this.isLoading = false;
         return;
       }
@@ -584,10 +631,12 @@ export class EspaceAdminComponent implements OnInit {
         this.audioFile || undefined
       ).subscribe({
         next: (response) => {
-          // Show success message in the modal
+          // Show success message in the modal and sync with main page
           this.showModalSuccess = true;
           this.modalSuccessMessage = 'Instrumental ajouté avec succès';
+          this.successMessage = this.modalSuccessMessage; // Sync messages
           this.showModalError = false;
+          this.errorMessage = ''; // Clear error message
           this.isLoading = false;
           
           // Close the modal after 3 seconds
@@ -602,6 +651,7 @@ export class EspaceAdminComponent implements OnInit {
         error: (error) => {
           this.showModalError = true;
           this.modalErrorMessage = 'Erreur lors de l\'ajout de l\'instrumental';
+          this.errorMessage = this.modalErrorMessage; // Sync messages
           console.error('Error adding instrumental:', error);
           this.isLoading = false;
         }
@@ -653,9 +703,13 @@ export class EspaceAdminComponent implements OnInit {
 
   // Update saveChanson method to handle form validation errors
   saveChanson(): void {
+    // Clear any existing messages before starting
+    this.clearMessages();
+    
     if (this.chansonForm.invalid) {
       this.showModalError = true;
       this.modalErrorMessage = 'Veuillez remplir tous les champs obligatoires';
+      this.errorMessage = this.modalErrorMessage; // Sync messages
       return;
     }
     
@@ -694,5 +748,19 @@ export class EspaceAdminComponent implements OnInit {
       // Continue with normal save process if not using multiple images
       this.processSaveChanson(chansonData);
     }
+  }
+
+  logout(): void {
+    this.authService.logout().subscribe({
+      next: (response) => {
+        console.log('Logout successful:', response.message);
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+        // Navigate to home page even if there's an error
+        this.router.navigate(['/']);
+      }
+    });
   }
 }
